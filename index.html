@@ -18,8 +18,10 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	
 	<!-- Include templates -->
-	<link rel="import" href="sql-templates.html">
-	<link rel="import" href="templates.html">
+	<!--
+	<link id="sqlTemplatesHtml" rel="import" href="templates/sql-templates.html">
+	<link id="pageTemplatesHtml" rel="import" href="templates/templates.html">
+	-->
 	
 	<!-- App Javascript files -->
 	<script src="javascripts/sql-quick-generator.js"></script>
@@ -79,8 +81,8 @@
       </div>
     </div>
 	
-	<div id="pageStructureTemplatesContainer" style="display: none;"></div>
-	<div id="sqlTemplatesContainer" style="display: none;"></div>
+	<span id="pageStructureTemplatesContainer"></span>
+	<span id="sqlTemplatesContainer"></span>
   
   </body>
 </html>

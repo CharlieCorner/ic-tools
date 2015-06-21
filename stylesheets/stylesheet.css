@@ -767,7 +767,7 @@ footer a:hover {
 }
 
 div.hiddenArea {
-	/*display: none;*/
+	display: none;
 }
 
 .clearfix {display: inline-block;}

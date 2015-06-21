@@ -1,7 +1,7 @@
 Generator = (function(){
 	
-	var SQL_TEMPLATES_LOCATION = "templates/sql-templates/sql-templates.html";
-	var HB_TEMPLATES_LOCATION = "templates/handlebars-templates/templates.html";
+	var SQL_TEMPLATES_LOCATION = "templates/sql-templates.html";
+	var HB_TEMPLATES_LOCATION = "templates/templates.html";
 	
 	var sayHi = function(){
 		console.log("HIII!");
@@ -11,7 +11,6 @@ Generator = (function(){
 		$.get(sLocation, function(data) {
 			$(sId).html(data);
 		});
-		//$(sId).load(sLocation);
 	};
 	
 	var loadSqlTemplates = function() {
@@ -21,9 +20,60 @@ Generator = (function(){
 	var loadHandleBarsTemplates = function() {
 		includeHtml("#pageStructureTemplatesContainer", HB_TEMPLATES_LOCATION);
 	};
+
+	var buildHBSQLObject = function($sqlTemplateTags){
+		var sqlObject = {
+			sqlList: []
+		};
+
+		$.each($sqlTemplateTags, function(index, tag){
+			var $tag = $(tag);
+			var sql = {
+				SQLId: $(tag).attr("id"),
+				SqlDescription : $(tag).attr("title")
+			};
+			
+			sqlObject.sqlList.push(sql);
+		});
+
+		return sqlObject;
+	};
+
+	var loadSQLIntoDropdown = function() {
+		var $sqlSelector = $("#templateSelect");
+		// Get the SQL template tags as jQuery objects
+		//  So I can loop through them
+		var $sqlTemplates = $("template.sqlTemplate");
+		var sqlObjects = buildHBSQLObject($sqlTemplates);
+
+		// Compile the templates
+		//  For each template tag, feed it to HandleBars
+		// Attach it to the selector
+		var hbTemplate = Handlebars.compile($("#selectorTemplate").html());
+		$sqlSelector.html(hbTemplate(sqlObjects));
+		
+	};
 		
 	return{
 		loadSqlTemplates: loadSqlTemplates,
-		loadHandleBarsTemplates: loadHandleBarsTemplates
+		loadHandleBarsTemplates: loadHandleBarsTemplates,
+		loadSQLIntoDropdown: loadSQLIntoDropdown
+	};
+})();
+
+/*
+ * -------------- Events -----------------------
+*/
+
+Generator.events = (function(){
+
+	// Event onSelectorChange
+
+	var attachEvents = function(){
+
+	};
+
+	return{
+		attachEvents: attachEvents
 	};
 })();
