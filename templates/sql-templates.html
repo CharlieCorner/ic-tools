@@ -1,6 +1,15 @@
 <template id="sql1" class="sqlTemplate" title="The first SQL">
-	SELECT * FROM SCHEMA.TABLE1;
+	SELECT 
+		{{id}},
+		{{ipAddress}},
+		{{clientId}} 
+		FROM SCHEMA.TABLE1;
 </template>
 <template id="sql2" class="sqlTemplate" title="The second SQL2">
-	SELECT * FROM SCHEMA.TABLE2;
+	UPDATE 
+		{{lol}},
+		{{uno}},
+		{{dos}} 
+	FROM SCHEMA.TABLE1 WHERE
+		id = {{someThing}};
 </template>

@@ -7,6 +7,25 @@ Generator = (function(){
 	var sayHi = function(){
 		console.log("HIII!");
 	};
+
+	var getAllRegexMatches = function(sString, rRegex){
+		var matches = [];
+		var m;
+
+		do {
+			m = rRegex.exec(sString);
+			
+			if (m) {
+				matches.push(m[1]);
+			}
+		} while (m);
+
+		return matches;
+	};
+
+	var compileTemplate = function($templateToBeCompiled){
+		return Handlebars.compile($templateToBeCompiled.html())
+	};
 	
 	var includeHtml = function(sId, sLocation){
 		$.get(sLocation, function(data) {
@@ -56,7 +75,7 @@ Generator = (function(){
 		// Compile the templates
 		//  For each template tag, feed it to HandleBars
 		// Attach it to the selector
-		var hbTemplate = Handlebars.compile($("#selectorTemplate").html());
+		var hbTemplate = compileTemplate($("#selectorTemplate"));
 		$sqlSelector.html(hbTemplate(sqlObjects));
 		
 	};
@@ -64,7 +83,9 @@ Generator = (function(){
 	return{
 		loadSqlTemplates: loadSqlTemplates,
 		loadHandleBarsTemplates: loadHandleBarsTemplates,
-		loadSQLIntoDropdown: loadSQLIntoDropdown
+		loadSQLIntoDropdown: loadSQLIntoDropdown,
+		getAllRegexMatches: getAllRegexMatches,
+		compileTemplate: compileTemplate
 	};
 })();
 
@@ -74,9 +95,51 @@ Generator = (function(){
 
 Generator.events = (function(){
 
-	// Event onSelectorChange
+	var onSqlSelectorChange = function(){
+		var $fieldDiv = $("#fieldDiv");
+		var $sqlDiv = $("#sqlDiv")
+		var $fieldTable = $("#inputFieldTable");
+
+		var selectorValue = $(this).val();
+		var fieldsRegex = /\{\{([^}]+)\}\}/gi;
+
+		$fieldDiv.hide();
+		$sqlDiv.hide();
+
+		if(-1 == selectorValue){
+			$fieldTable.html("");
+			return;
+		}
+
+		// Get SQL Template to be worked
+		var templateHtml = $("#" + selectorValue).html();
+
+		// Strip the fields in it
+		var listOfFields = Generator.getAllRegexMatches(templateHtml, fieldsRegex);
+
+		//Build and object from each of the fields
+		var handleBarsObject = {
+			fieldsArray : []
+		};
+
+		$.each(listOfFields, function(index, element){
+			var field = {
+				fieldName : element
+			};
+			handleBarsObject.fieldsArray.push(field);
+		});
+
+		// Compile template and add it to the table
+		var hbTemplate = Generator.compileTemplate($("#fieldValuesRows"));
+		var html = hbTemplate(handleBarsObject);
+		$fieldTable.html(html);
+
+
+		$fieldDiv.show();
+	};
 
 	var attachEvents = function(){
+		$("#templateSelect").change(onSqlSelectorChange);
 
 	};
 

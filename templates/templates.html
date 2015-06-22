@@ -1,5 +1,19 @@
 <template id="selectorTemplate">
+		<option value="-1">--Select one--</option>
 	{{#each sqlList}}
 		<option  value={{SQLId}}>{{SqlDescription}}</option>
+	{{/each}}
+</template>
+
+<template id="fieldValuesRows">
+	{{#each fieldsArray}}
+		<tr>
+			<td>
+				{{fieldName}}
+			</td>
+			<td>
+				<input type="text" id="{{fieldName}}"/>
+			</td>
+		</tr>
 	{{/each}}
 </template>
