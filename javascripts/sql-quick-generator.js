@@ -2,6 +2,7 @@ Generator = (function(){
 	
 	var SQL_TEMPLATES_LOCATION = "templates/sql-templates.html";
 	var HB_TEMPLATES_LOCATION = "templates/templates.html";
+	var hasTheOtherTemplateFileLoadedYet = false;
 	
 	var sayHi = function(){
 		console.log("HIII!");
@@ -10,6 +11,12 @@ Generator = (function(){
 	var includeHtml = function(sId, sLocation){
 		$.get(sLocation, function(data) {
 			$(sId).html(data);
+
+			if(hasTheOtherTemplateFileLoadedYet){
+				loadSQLIntoDropdown();
+			} else {
+				hasTheOtherTemplateFileLoadedYet = true;
+			}
 		});
 	};
 	
