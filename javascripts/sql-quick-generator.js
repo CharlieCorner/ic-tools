@@ -97,7 +97,7 @@ Generator.events = (function(){
 
 	var onSqlSelectorChange = function(){
 		var $fieldDiv = $("#fieldDiv");
-		var $sqlDiv = $("#sqlDiv")
+		var $sqlDiv = $("#sqlDiv");
 		var $fieldTable = $("#inputFieldTable");
 
 		var selectorValue = $(this).val();
@@ -138,8 +138,31 @@ Generator.events = (function(){
 		$fieldDiv.show();
 	};
 
+	var onClickGoButton = function(){
+		var $sqlDiv = $("#sqlDiv");
+		var selectorValue = $("#templateSelect").val();
+		var $textArea = $("#sqlTextAreaResult");
+		$textArea.val("");
+		
+		// Obtain the fields values and build the object
+		var inputs = $("#inputFieldTable input");
+		var valuesObject = {};
+
+		$.each(inputs, function(index, elm){
+			var $elm = $(elm);
+			valuesObject[$elm.attr("id")] = $elm.val();
+		});
+
+		var hbTemplate = Generator.compileTemplate($("#" + selectorValue));
+		var sqlContent = hbTemplate(valuesObject);
+		$textArea.val(sqlContent);
+
+		$sqlDiv.show();
+	};
+
 	var attachEvents = function(){
 		$("#templateSelect").change(onSqlSelectorChange);
+		$("#goButton").click(onClickGoButton);
 
 	};
 
