@@ -154,7 +154,7 @@ Generator.events = (function(){
 		});
 
 		var hbTemplate = Generator.compileTemplate($("#" + selectorValue));
-		var sqlContent = hbTemplate(valuesObject);
+		var sqlContent = hbTemplate(valuesObject).trim();
 		$textArea.val(sqlContent);
 
 		$sqlDiv.show();
