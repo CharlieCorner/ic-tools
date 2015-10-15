@@ -1,4 +1,4 @@
-Generator = (function(){
+ICTools = (function(){
 	
 	var SQL_TEMPLATES_LOCATION = "templates/sql-templates.html";
 	var HB_TEMPLATES_LOCATION = "templates/templates.html";
@@ -93,7 +93,7 @@ Generator = (function(){
  * -------------- Events -----------------------
 */
 
-Generator.events = (function(){
+ICTools.events = (function(){
 
 	var onSqlSelectorChange = function(){
 		var $fieldDiv = $("#fieldDiv");
@@ -115,7 +115,7 @@ Generator.events = (function(){
 		var templateHtml = $("#" + selectorValue).html();
 
 		// Strip the fields in it
-		var listOfFields = Generator.getAllRegexMatches(templateHtml, fieldsRegex);
+		var listOfFields = ICTools.getAllRegexMatches(templateHtml, fieldsRegex);
 
 		//Build and object from each of the fields
 		var handleBarsObject = {
@@ -130,7 +130,7 @@ Generator.events = (function(){
 		});
 
 		// Compile template and add it to the table
-		var hbTemplate = Generator.compileTemplate($("#fieldValuesRows"));
+		var hbTemplate = ICTools.compileTemplate($("#fieldValuesRows"));
 		var html = hbTemplate(handleBarsObject);
 		$fieldTable.html(html);
 
@@ -153,7 +153,7 @@ Generator.events = (function(){
 			valuesObject[$elm.attr("id")] = $elm.val();
 		});
 
-		var hbTemplate = Generator.compileTemplate($("#" + selectorValue));
+		var hbTemplate = ICTools.compileTemplate($("#" + selectorValue));
 		var sqlContent = hbTemplate(valuesObject).trim();
 		$textArea.val(sqlContent);
 

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	Generator.loadSqlTemplates();
-	Generator.loadHandleBarsTemplates();
-	Generator.events.attachEvents();
+	ICTools.loadSqlTemplates();
+	ICTools.loadHandleBarsTemplates();
+	ICTools.events.attachEvents();
 });
