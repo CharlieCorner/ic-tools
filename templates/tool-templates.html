@@ -8,6 +8,8 @@
 			{{no_of_octets_to_validate}}
 		)
 </template>
+
+
 <template id="sql2" class="sqlTemplate" title="Give access to API's by IP">
 	INSERT INTO B2B_CLIENT_TRANSACTIONS(
 		B2B_CLIENT_ID,
@@ -18,4 +20,14 @@
 		{{transaction_id}},
 		{{transaction_spec_id}}
 	)
+</template>
+
+<!-- This template is just for listing the fields in this tool -->
+<template id="decodingEncodingTool" class="toolTemplate" title="Encode/Decode an Authentication Header">
+	{{user_id}}
+	{{password}}
+	{{basic_authentication_hash}}
+</template>
+<template id="anotherTestTool" class="toolTemplate" title="Di algo mas!">
+	{{message}}
 </template>

@@ -70,6 +70,7 @@ ICTools = (function(){
 		// Get the SQL and TOOL template tags as jQuery objects
 		//  So I can loop through them
 		var $toolTemplates = $("template.sqlTemplate");
+		$toolTemplates.push($("template.toolTemplate"));
 		var toolObjects = buildHBToolObject($toolTemplates);
 
 		// Compile the templates
@@ -111,7 +112,7 @@ ICTools.events = (function(){
 			return;
 		}
 
-		// Get TOOL Template to be worked
+		// Get the TOOL Template to be worked
 		var templateHtml = $("#" + selectorValue).html();
 
 		// Strip the fields in it
@@ -127,7 +128,7 @@ ICTools.events = (function(){
 				fieldName : element
 			};
 			handleBarsObject.fieldsArray.push(field);
-		});
+		});	
 
 		// Compile template and add it to the table
 		var hbTemplate = ICTools.compileTemplate($("#fieldValuesRows"));
@@ -139,25 +140,36 @@ ICTools.events = (function(){
 	};
 
 	var onClickGoButton = function(){
-		var $toolLDiv = $("#toolDiv");
+		var $toolDiv = $("#toolDiv");
 		var selectorValue = $("#templateSelect").val();
-		var $textArea = $("#toolTextAreaResult");
-		$textArea.val("");
-		
-		// Obtain the fields values and build the object
-		var inputs = $("#inputFieldTable input");
-		var valuesObject = {};
 
-		$.each(inputs, function(index, elm){
-			var $elm = $(elm);
-			valuesObject[$elm.attr("id")] = $elm.val();
-		});
+		// If the tool selected is not an SQL template, but an actual tool, look for
+		//  its associated logic, otherwise just compile the SQL template
+		if(selectorValue.toLowerCase().indexOf("tool") > -1){
+			// It is a tool!
+			//  Execute it!
+			ICTools.appData[selectorValue].execute();
 
-		var hbTemplate = ICTools.compileTemplate($("#" + selectorValue));
-		var toolContent = hbTemplate(valuesObject).trim();
-		$textArea.val(toolContent);
+		} else {
+			// It is an SQL template
 
-		$toolLDiv.show();
+			var $textArea = $("#toolTextAreaResult");
+			$textArea.val("");
+
+			// Obtain the fields values and build the object
+			var inputs = $("#inputFieldTable input");
+			var valuesObject = {};
+
+			$.each(inputs, function(index, elm){
+				var $elm = $(elm);
+				valuesObject[$elm.attr("id")] = $elm.val();
+			});
+
+			var hbTemplate = ICTools.compileTemplate($("#" + selectorValue));
+			var toolContent = hbTemplate(valuesObject).trim();
+			$textArea.val(toolContent);
+			$toolDiv.show();
+		}
 	};
 
 	var attachEvents = function(){
@@ -169,4 +181,56 @@ ICTools.events = (function(){
 	return{
 		attachEvents: attachEvents
 	};
+})();
+
+// The logic associated with the tools
+ICTools.appData = (function(){
+	
+	var decodingEncodingTool = {
+		execute : function(){
+			var $userIdField = $("#inputFieldTable #user_id");
+			var $passwordField = $("#inputFieldTable #password");
+			var $hashField = $("#inputFieldTable #basic_authentication_hash");
+			
+			// Determine to enconde or decode
+			
+			if($hashField.val().trim()){
+				//There's a hash, let's decode it
+				var hash = $hashField.val().trim();
+
+				try {
+					var sDecoded = window.atob(hash);
+					var arrayPair = sDecoded.split(":");
+					$userIdField.val(arrayPair[0]);
+					$passwordField.val(arrayPair[1]);
+
+				} catch(exception){
+					$userIdField.val("INVALID");
+					$passwordField.val("BASE64 HASH!");
+				}
+				
+
+			} else {
+				//There's not a hash, let's encode it!
+				var sUser = $userIdField.val();
+				var sPassword = $passwordField.val();
+				$hashField.val(window.btoa(sUser + ":" + sPassword));
+
+
+			}
+
+		}
+	};
+
+	var anotherTestTool = {
+		execute: function(){
+			alert("Callate!");
+		}
+	};
+
+	return {
+		decodingEncodingTool: decodingEncodingTool,
+		anotherTestTool: anotherTestTool
+	};
+
 })();
