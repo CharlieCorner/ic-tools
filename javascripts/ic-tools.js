@@ -1,6 +1,6 @@
 ICTools = (function(){
 	
-	var SQL_TEMPLATES_LOCATION = "templates/sql-templates.html";
+	var TOOL_TEMPLATES_LOCATION = "templates/tool-templates.html";
 	var HB_TEMPLATES_LOCATION = "templates/templates.html";
 	var hasTheOtherTemplateFileLoadedYet = false;
 	
@@ -32,58 +32,58 @@ ICTools = (function(){
 			$(sId).html(data);
 
 			if(hasTheOtherTemplateFileLoadedYet){
-				loadSQLIntoDropdown();
+				loadToolIntoDropdown();
 			} else {
 				hasTheOtherTemplateFileLoadedYet = true;
 			}
 		});
 	};
 	
-	var loadSqlTemplates = function() {
-		includeHtml("#sqlTemplatesContainer", SQL_TEMPLATES_LOCATION);
+	var loadToolTemplates = function() {
+		includeHtml("#toolTemplatesContainer", TOOL_TEMPLATES_LOCATION);
 	};
 	
 	var loadHandleBarsTemplates = function() {
 		includeHtml("#pageStructureTemplatesContainer", HB_TEMPLATES_LOCATION);
 	};
 
-	var buildHBSQLObject = function($sqlTemplateTags){
-		var sqlObject = {
-			sqlList: []
+	var buildHBToolObject = function($toolTemplateTags){
+		var toolObject = {
+			toolList: []
 		};
 
-		$.each($sqlTemplateTags, function(index, tag){
+		$.each($toolTemplateTags, function(index, tag){
 			var $tag = $(tag);
-			var sql = {
-				SQLId: $(tag).attr("id"),
-				SqlDescription : $(tag).attr("title")
+			var tool = {
+				toolId: $(tag).attr("id"),
+				toolDescription : $(tag).attr("title")
 			};
 			
-			sqlObject.sqlList.push(sql);
+			toolObject.toolList.push(tool);
 		});
 
-		return sqlObject;
+		return toolObject;
 	};
 
-	var loadSQLIntoDropdown = function() {
-		var $sqlSelector = $("#templateSelect");
-		// Get the SQL template tags as jQuery objects
+	var loadToolIntoDropdown = function() {
+		var $toolSelector = $("#templateSelect");
+		// Get the SQL and TOOL template tags as jQuery objects
 		//  So I can loop through them
-		var $sqlTemplates = $("template.sqlTemplate");
-		var sqlObjects = buildHBSQLObject($sqlTemplates);
+		var $toolTemplates = $("template.sqlTemplate");
+		var toolObjects = buildHBToolObject($toolTemplates);
 
 		// Compile the templates
 		//  For each template tag, feed it to HandleBars
 		// Attach it to the selector
 		var hbTemplate = compileTemplate($("#selectorTemplate"));
-		$sqlSelector.html(hbTemplate(sqlObjects));
+		$toolSelector.html(hbTemplate(toolObjects));
 		
 	};
 		
 	return{
-		loadSqlTemplates: loadSqlTemplates,
+		loadToolTemplates: loadToolTemplates,
 		loadHandleBarsTemplates: loadHandleBarsTemplates,
-		loadSQLIntoDropdown: loadSQLIntoDropdown,
+		loadToolIntoDropdown: loadToolIntoDropdown,
 		getAllRegexMatches: getAllRegexMatches,
 		compileTemplate: compileTemplate
 	};
@@ -95,23 +95,23 @@ ICTools = (function(){
 
 ICTools.events = (function(){
 
-	var onSqlSelectorChange = function(){
+	var onToolSelectorChange = function(){
 		var $fieldDiv = $("#fieldDiv");
-		var $sqlDiv = $("#sqlDiv");
+		var $toolDiv = $("#toolDiv");
 		var $fieldTable = $("#inputFieldTable");
 
 		var selectorValue = $(this).val();
 		var fieldsRegex = /\{\{([^}]+)\}\}/gi;
 
 		$fieldDiv.hide();
-		$sqlDiv.hide();
+		$toolDiv.hide();
 
 		if(-1 == selectorValue){
 			$fieldTable.html("");
 			return;
 		}
 
-		// Get SQL Template to be worked
+		// Get TOOL Template to be worked
 		var templateHtml = $("#" + selectorValue).html();
 
 		// Strip the fields in it
@@ -139,9 +139,9 @@ ICTools.events = (function(){
 	};
 
 	var onClickGoButton = function(){
-		var $sqlDiv = $("#sqlDiv");
+		var $toolLDiv = $("#toolDiv");
 		var selectorValue = $("#templateSelect").val();
-		var $textArea = $("#sqlTextAreaResult");
+		var $textArea = $("#toolTextAreaResult");
 		$textArea.val("");
 		
 		// Obtain the fields values and build the object
@@ -154,14 +154,14 @@ ICTools.events = (function(){
 		});
 
 		var hbTemplate = ICTools.compileTemplate($("#" + selectorValue));
-		var sqlContent = hbTemplate(valuesObject).trim();
-		$textArea.val(sqlContent);
+		var toolContent = hbTemplate(valuesObject).trim();
+		$textArea.val(toolContent);
 
-		$sqlDiv.show();
+		$toolLDiv.show();
 	};
 
 	var attachEvents = function(){
-		$("#templateSelect").change(onSqlSelectorChange);
+		$("#templateSelect").change(onToolSelectorChange);
 		$("#goButton").click(onClickGoButton);
 
 	};
